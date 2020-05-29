@@ -3,14 +3,14 @@ import logo from './logo.svg';
 import './App.css';
 import Header from './components/header'
 import SearchBar from './components/SearchBarField'
-import MapWorld from './components/ComposableMap'
+import GoogleMaps from './components/ComposableMap'
 
 function App() {
   return (
     <div className="App">
       <Header />
-      <SearchBar/>
-      <MapWorld/>
+      {/* <SearchBar/> */}
+  <GoogleMaps />
     </div>
   );
 }
