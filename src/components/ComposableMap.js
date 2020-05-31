@@ -1,10 +1,13 @@
-import React from "react";
+// import React from "react";
+import React, {useEffect, useState} from 'react'
 import ReactDOM from "react-dom";
 // import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 // import "./styles.css";
 import {GoogleMap, useLoadScript,Marker, InfoWindow} from "@react-google-maps/api"
 import MapStyles from './MapStyles'
 import SpotifyImageIcon from '../Images/spotifyIcon.png'
+// import PlayListCountries from './CountryMap'
+import countriesLocation from '../JSON/CountryLatLng.json'
 
 const libraries = ["places"]
 const mapContainerStyle = {
@@ -12,9 +15,8 @@ const mapContainerStyle = {
     height: "100vh"
 }
 
-const centerMedellin = {
-    lat: 6.244203,
-    lng: -75.581215
+const centerColombia = {
+    lat:4.570868, lng:-74.297333
 
 }
 
@@ -24,9 +26,30 @@ const options = {
     zoomControl: true
 }
 
-const markers = [{id: 1, lat:4.570868, lng:-74.297333, country: "Colombia"},{id: 2, lat: -38.416097, lng:-63.616672, country: "Argentina"}]
+// const markers = [{id: 1, lat:4.570868, lng:-74.297333, country: "Colombia"},{id: 2, lat: -38.416097, lng:-63.616672, country: "Argentina"}]
+const arrayCountry = []
 
 export default function GoogleMaps() {
+const [state, setState] = useState([])
+
+useEffect(() => {
+    fetch('http://127.0.0.1:5000/musicstats/api/v1.0/getPlaylists')
+    .then(data => data.json())
+    .then(playLists => {
+        // let arrayCountry = []
+        playLists.results.forEach(c => {
+            let playlistCountry = c.name
+            countriesLocation.map(m => {
+                        let mapCountry = m.country
+                        if (playlistCountry.includes(mapCountry)) {
+                            arrayCountry.push(m)
+                        }
+                })
+
+            })
+            setState(arrayCountry)
+        })
+    },[])
 
 const {isLoaded, loadError} = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -37,17 +60,21 @@ if (loadError) return "Error loading maps"
 if (!isLoaded) return "loading maps"
 
 
+
+console.log(state)
 return (<div>
+
     <GoogleMap mapContainerStyle={mapContainerStyle}
-    zoom={8}
-    center={centerMedellin}
+    zoom={4}
+    center={centerColombia}
     options={options}
     >
-     {markers.map(marker => {
+     {arrayCountry.map(marker => {
          console.log(marker)
          return <Marker key={marker.id}
-         position={{lat: marker.lat, lng: marker.lng}}
-         icon={{url: SpotifyImageIcon, scaledSize: new window.google.maps.Size(30,30)}}
+         position={{lat: marker.lat + 1, lng: marker.lng}}
+         icon={{url: SpotifyImageIcon, scaledSize: new window.google.maps.Size(20,20), origin: new window.google.maps.Point(0,0), anchor: new window.google.maps.Point(15,15)}}
+         
          />
      })}  
 
