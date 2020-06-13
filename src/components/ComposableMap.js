@@ -30,13 +30,16 @@ const options = {
 const arrayCountry = []
 
 export default function GoogleMaps() {
-const [state, setState] = useState([])
+const [countriesState, setState] = useState([])
+const [hoverPlaylist, setHoverPlaylist] = useState([])
+const [providerState, setProvider] = ("Spotify")
 
 useEffect(() => {
     fetch('http://127.0.0.1:5000/musicstats/api/v1.0/getPlaylists')
     .then(data => data.json())
     .then(playLists => {
         // let arrayCountry = []
+
         playLists.results.forEach(c => {
             let playlistCountry = c.name
             countriesLocation.map(m => {
@@ -61,21 +64,26 @@ if (!isLoaded) return "loading maps"
 
 
 
-console.log(state)
+console.log(countriesState)
 return (<div>
 
     <GoogleMap mapContainerStyle={mapContainerStyle}
     zoom={4}
     center={centerColombia}
     options={options}
+
     >
      {arrayCountry.map(marker => {
          console.log(marker)
          return <Marker key={marker.id}
-         position={{lat: marker.lat + 1, lng: marker.lng}}
+         position={{lat: marker.lat, lng: marker.lng}}
          icon={{url: SpotifyImageIcon, scaledSize: new window.google.maps.Size(20,20), origin: new window.google.maps.Point(0,0), anchor: new window.google.maps.Point(15,15)}}
-         
+         onClick={() => {
+            console.log(marker)
+            setHoverPlaylist(marker)
+        }}
          />
+         
      })}  
 
 
