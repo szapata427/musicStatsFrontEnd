@@ -8,6 +8,7 @@ import MapStyles from './MapStyles'
 import SpotifyImageIcon from '../Images/spotifyIcon.png'
 // import PlayListCountries from './CountryMap'
 import countriesLocation from '../JSON/CountryLatLng.json'
+import PlayListHoveDisplay from './PlaylistHover'
 
 const libraries = ["places"]
 const mapContainerStyle = {
@@ -31,7 +32,7 @@ const arrayCountry = []
 
 export default function GoogleMaps() {
 const [countriesState, setState] = useState([])
-const [hoverPlaylist, setHoverPlaylist] = useState([])
+const [hoverPlaylist, setHoverPlaylist] = useState(null)
 const [providerState, setProvider] = ("Spotify")
 
 useEffect(() => {
@@ -64,7 +65,6 @@ if (!isLoaded) return "loading maps"
 
 
 
-console.log(countriesState)
 return (<div>
 
     <GoogleMap mapContainerStyle={mapContainerStyle}
@@ -74,7 +74,6 @@ return (<div>
 
     >
      {arrayCountry.map(marker => {
-         console.log(marker)
          return <Marker key={marker.id}
          position={{lat: marker.lat, lng: marker.lng}}
          icon={{url: SpotifyImageIcon, scaledSize: new window.google.maps.Size(20,20), origin: new window.google.maps.Point(0,0), anchor: new window.google.maps.Point(15,15)}}
@@ -86,7 +85,9 @@ return (<div>
          
      })}  
 
-
+     {hoverPlaylist ? (<InfoWindow position={{lat: hoverPlaylist.lat, lng: hoverPlaylist.lng}}>
+     <PlayListHoveDisplay />
+         </InfoWindow>): null}
 
     </GoogleMap>
 </div>)
